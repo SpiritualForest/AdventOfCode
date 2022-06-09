@@ -50,6 +50,7 @@ fun solveProblem(data: List<String>): List<Int> {
     var totalSum = 0
     for(lineStr in data) {
         val points: MutableList<Int> = mutableListOf()
+        // From "x1,y1 -> x2,y2" to Int listOf(x1, y1, x2, y2)
         lineStr.split(" -> ").forEach { it.split(",").forEach { points.add(it.toInt()) } }
         if (points[0] == points[2]) {
             // x1 == x2, so iterate on y
