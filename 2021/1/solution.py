@@ -1,3 +1,5 @@
+# Python
+
 fh = open("input.txt")
 data = fh.read().strip().split("\n")
 data = list(map(int, data))

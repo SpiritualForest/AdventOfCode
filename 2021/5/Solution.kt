@@ -1,3 +1,5 @@
+// Kotlin
+
 import java.io.File
 import java.io.InputStream
 
@@ -31,6 +33,15 @@ fun sortMinMax(a: Int, b: Int): List<Int> {
     }
 }
 
+fun addToHashMap(mapObj: HashMap<Point, Int>, point: Point) {
+    if (mapObj.containsKey(point)) {
+        mapObj[point] = mapObj[point]!!+1
+    }
+    else {
+        mapObj[point] = 1
+    }
+}
+
 fun solveProblem(data: List<String>): List<Int> {
     // Parse the data first
     val linearPointsCount: HashMap<Point, Int> = hashMapOf() // Point(x,y) -> count
@@ -46,16 +57,9 @@ fun solveProblem(data: List<String>): List<Int> {
             val iterationY = sortMinMax(points[1], points[3])
             for(y in iterationY[0] until iterationY[1]+1) {
                 val point = Point(x, y)
-                if (linearPointsCount.containsKey(point)) {
-                    linearPointsCount[point] = linearPointsCount[point]!!+1
-                }
-                else {
-                    linearPointsCount[point] = 1
-                }
-                if (diagonalPointsCount.containsKey(point)) {
-                    diagonalPointsCount[point] = diagonalPointsCount[point]!!+1
-                }
-                else { diagonalPointsCount[point] = 1 }
+                // Increase the count for this Point
+                addToHashMap(linearPointsCount, point)
+                addToHashMap(diagonalPointsCount, point)
             }
         }
         else if (points[1] == points[3]) {
@@ -64,16 +68,9 @@ fun solveProblem(data: List<String>): List<Int> {
             val iterationX = sortMinMax(points[0], points[2])
             for(x in iterationX[0] until iterationX[1]+1) {
                 val point = Point(x, y)
-                if (linearPointsCount.containsKey(point)) {
-                    linearPointsCount[point] = linearPointsCount[point]!!+1
-                }
-                else {
-                    linearPointsCount[point] = 1
-                }
-                if (diagonalPointsCount.containsKey(point)) {
-                    diagonalPointsCount[point] = diagonalPointsCount[point]!!+1
-                }
-                else { diagonalPointsCount[point] = 1 }
+                // Increase count
+                addToHashMap(linearPointsCount, point)
+                addToHashMap(diagonalPointsCount, point)
             }
         }
         else {
@@ -81,25 +78,17 @@ fun solveProblem(data: List<String>): List<Int> {
             // In this one, we must keep the order of the points
             var (x1, y1) = arrayOf(points[0], points[1])
             var (x2, y2) = arrayOf(points[2], points[3])
-            // Create IntProgressions: if the first x and y values are larger than the second ones
-            // we make them iterate backwards (downTo), otherwise we create a normal forward range iteration.
             var verticalProgression: Int = if (y1 > y2) { -1 } else { 1 } // If y1 is larger, we move backwards, otherwise forwards
             var horizontalProgression: Int = if (x1 > x2) { -1 } else { 1 } // If x1 is larger, we move backwards
             while((y1 != y2) and (x1 != x2)) {
                 val point = Point(x1, y1)
-                if (diagonalPointsCount.containsKey(point)) {
-                    diagonalPointsCount[point] = diagonalPointsCount[point]!!+1
-                }
-                else { diagonalPointsCount[point] = 1 }
+                // Increase count
+                addToHashMap(diagonalPointsCount, point)
                 y1 += verticalProgression
                 x1 += horizontalProgression
             }
             // Off-by-one error in the loop, correct here.
-            val point = Point(x1, y1)
-            if (diagonalPointsCount.containsKey(point)) {
-                diagonalPointsCount[point] = diagonalPointsCount[point]!!+1
-            }
-            else { diagonalPointsCount[point] = 1 }
+            addToHashMap(diagonalPointsCount, Point(x1, y1))
         }
     }
     for(point in linearPointsCount.keys) {

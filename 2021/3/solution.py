@@ -1,3 +1,5 @@
+# Python
+
 fh = open("input.txt")
 data = fh.read().strip().split("\n")
 fh.close()
