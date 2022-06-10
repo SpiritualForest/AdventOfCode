@@ -50,17 +50,14 @@ class Solution {
         // First organize the crabs into groups
         HashMap<Integer, Integer> groups = groupCrabs(positions);
         // Brute force approach
-        int max = 0;
-        for(int i : groups.keySet()) {
-            if (i > max) { max = i; }
-        }
-        int normalLeastFuel = (int)Math.pow(2, 32); // Part 1, "normal fuel"
-        int expensiveLeastFuel = (int)Math.pow(2, 32); // Part 2, "expensive fuel"
-        for(int i = 0; i < max; i++) {
+        int max = (int)Math.pow(2, 32);
+        int normalLeastFuel = max; // Part 1, "normal fuel"
+        int expensiveLeastFuel = max; // Part 2, "expensive fuel"
+        for(int i = 0; i < positions.length; i++) {
             int normalFuel = 0;
             int expensiveFuel = 0;
             for(int pos : groups.keySet()) {
-                int n = (pos > i) ? pos-i : i-pos;
+                int n = (pos > i) ? pos-i : i-pos; // How many steps to move
                 normalFuel += n*groups.get(pos);
                 expensiveFuel += (n*(n+1)/2)*groups.get(pos);
             }
