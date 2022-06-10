@@ -17,13 +17,17 @@ function solveProblem(numbers, lastDay) {
         fishes.push(0);
     }
     // Organize the fishes array based on the initial state
+    // each n is treated as an index number of the day it corresponds to
+    // So if we encounter 3, index 3 gets one more fish in it.
+    // If we encounter 0, index 0 gets one more fish, and so forth.
     for(let n of numbers) {
         fishes[n]++;
     }
     // Start the loop
     for(let day = 0; day < lastDay; day++) {
-        // Repeatedly move the number values downwards towards 0.
-        const created = fishes[0];
+        // Everyday all the fishes move one day downwards in the array, until they reach index 0.
+        // Once they reach 0, they create new fishes, one per each of them.
+        const created = fishes[0]; // How many were created today
         for(let i = 1; i < fishes.length; i++) {
             fishes[i-1] = fishes[i];
         }
@@ -68,7 +72,7 @@ for(let test in cases) {
         console.log("...passed");
     }
     else {
-        console.log("...failed. Excepted: %d, actual: %d", cases[test], result);
+        console.log("...failed. Expected: %d, actual: %d", cases[test], result);
     }
 }
 
