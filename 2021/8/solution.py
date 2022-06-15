@@ -46,7 +46,7 @@ def solvePartTwo(inputList: list[str]) -> int:
         remainingLetters = list("abcdefg")
         # Our goal is to confirm the index position of each letter.
         # First, we need to find 1, 4, 7, as they're the information patterns we need
-        # in order to determine the initial placements
+        # in order to determine the initial indices.
         informationPatterns = []
         for pattern in signalPatterns[:3]:
             informationPatterns.append(pattern)
@@ -101,8 +101,9 @@ def solvePartTwo(inputList: list[str]) -> int:
             else:
                 indices[4], indices[3] = three, four
                 ninePattern = pattern
-
-        confirmedPatterns.update(dict(zip((zeroPattern, sixPattern, ninePattern, "".join(sorted(signalPatterns[-1]))), (0, 6, 9, 8))))
+        
+        # pattern str -> number
+        confirmedPatterns.update(dict(zip((zeroPattern, sixPattern, ninePattern, "abcdefg"), (0, 6, 9, 8))))
         # After confirming all the positions, we can examine the final three patterns
         for pattern in signalPatterns[3:6]:
             pattern = "".join(sorted(pattern))
