@@ -57,6 +57,8 @@ def solvePartTwo(inputList: list[str]) -> int:
                 except ValueError:
                     pass
 
+        # Variables such as "one", "two" etc hold letters that could go into the index position
+        # which is indicated by the variable name.
         one, two = informationPatterns[0] # Letters
         for i, pattern in enumerate(informationPatterns[1:]):
             for letter in informationPatterns[0]:
@@ -72,7 +74,7 @@ def solvePartTwo(inputList: list[str]) -> int:
         # and shape 9 to confirm indices 3 and 4.
         # First, examine the letters for indices 1 and 2
         onetwo, zeroonetwo, onetwofivesix = ["".join(sorted(pattern)) for pattern in (one+two, zero+one+two, one+two+five+six)]
-        confirmedPatterns = {onetwo: 1, zeroonetwo: 7, onetwofivesix: 4}
+        confirmedPatterns = {onetwo: 1, zeroonetwo: 7, onetwofivesix: 4, "abcdefg": 8}
         indices = dict()
         for pattern in signalPatterns[6:9]:
             # 6 first
@@ -103,13 +105,12 @@ def solvePartTwo(inputList: list[str]) -> int:
                 ninePattern = pattern
         
         # pattern str -> number
-        confirmedPatterns.update(dict(zip((zeroPattern, sixPattern, ninePattern, "abcdefg"), (0, 6, 9, 8))))
+        confirmedPatterns.update(dict(zip((zeroPattern, sixPattern, ninePattern), (0, 6, 9))))
         # After confirming all the positions, we can examine the final three patterns
         for pattern in signalPatterns[3:6]:
             pattern = "".join(sorted(pattern))
             # the shape for 3 doesn't contain indices 4 and 5
             if indices[4] not in pattern and indices[5] not in pattern:
-                # It's 3
                 confirmedPatterns[pattern] = 3
             # The shape for 5 doesn't contain indices 1 and 4
             elif indices[1] not in pattern and indices[4] not in pattern:
