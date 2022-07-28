@@ -65,7 +65,6 @@ public class Solution {
         // This means that if <direction> is right, we can only move right, up, or down.
         // End conditions for recursion:
         // if encountered a wall, 9, or all adjacent positions have already been encountered.
-        if (heightMap[y][x] == 9) { return; }
         int packedPoint = PackPoint(x, y);
         if (!basin.Contains(packedPoint)) {
             // We haven't seen this one yet, add it
@@ -73,7 +72,15 @@ public class Solution {
         }
         // Now check, do we continue our recursion, or not?
         // If a wall is encountered, set the next value in its direction to 9, to signify that we're done here.
-        int up = 1, down = 1, left = 1, right = 1;
+        int up, down, left, right;
+        try { up = heightMap[y-1][x]; }
+        catch (ArgumentOutOfRangeException) { up = 9; }
+        try { down = heightMap[y+1][x]; }
+        catch(ArgumentOutOfRangeException) { down = 9; }
+        try { left = heightMap[y][x-1]; }
+        catch(ArgumentOutOfRangeException) { left = 9; }
+        try { right = heightMap[y][x+1]; }
+        catch(ArgumentOutOfRangeException) { right = 9; }
         if (y == 0) { 
             // Top wall reached
             up = 9;
