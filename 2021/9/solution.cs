@@ -71,7 +71,8 @@ public class Solution {
             basin.Add(packedPoint);
         }
         // Now check, do we continue our recursion, or not?
-        // If a wall is encountered, set the next value in its direction to 9, to signify that we're done here.
+        // If a wall is encountered, set the next value in its direction to 9, to signify that the recursion should not be
+        // dispatched towards that direction of movement.
         int up, down, left, right;
         try { up = heightMap[y-1][x]; }
         catch (ArgumentOutOfRangeException) { up = 9; }
@@ -81,26 +82,6 @@ public class Solution {
         catch(ArgumentOutOfRangeException) { left = 9; }
         try { right = heightMap[y][x+1]; }
         catch(ArgumentOutOfRangeException) { right = 9; }
-        if (y == 0) { 
-            // Top wall reached
-            up = 9;
-            down = heightMap[y+1][x];
-        }
-        else if (y+1 == heightMap.Count) {
-            // Bottom wall
-            down = 9;
-            up = heightMap[y-1][x];
-        }
-        if (x == 0) {
-            // Left wall
-            left = 9;
-            right = heightMap[y][x+1];
-        }
-        else if (x+1 == heightMap[y].Count) {
-            // Right wall
-            right = 9;
-            left = heightMap[y][x-1];
-        }
 
         // If the adjacent position in the direction of movement is neither 9, nor found in our basin set, we start a new recursion there.
         if (direction == mLeft) {
