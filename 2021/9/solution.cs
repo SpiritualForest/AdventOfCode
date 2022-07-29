@@ -18,6 +18,21 @@ public class Solution {
     static int mRight  = 1;
     static int mUp = 2;
     static int mDown = 3;
+    
+    static Dictionary<int, List<int>> movements = new Dictionary<int, List<int>>() {
+        // direction, list of { x, y }
+        { mLeft, new List<int>() { 1, 0 } },
+        { mRight, new List<int>() { -1, 0 } },
+        { mUp, new List<int>() { 0, -1 } },
+        { mDown, new List<int>() { 0, 1 } }
+    };
+
+    static Dictionary<int, int> opposites = new Dictionary<int, int>() {
+        { mLeft, mRight },
+        { mRight, mLeft },
+        { mUp, mDown },
+        { mDown, mUp }
+    };
 
     private static string[] _sample = {
         "2199943210",
@@ -61,76 +76,34 @@ public class Solution {
     }
 
     private static void FindBasin(List<List<int>> heightMap, HashSet<int> basin, int direction, int x, int y) {
-        // Move in all directions EXCEPT opposite of <direction>
-        // This means that if <direction> is right, we can only move right, up, or down.
-        // End conditions for recursion:
-        // if encountered a wall, 9, or all adjacent positions have already been encountered.
+        int point = heightMap[y][x];
         int packedPoint = PackPoint(x, y);
         if (!basin.Contains(packedPoint)) {
-            // We haven't seen this one yet, add it
             basin.Add(packedPoint);
         }
-        // Now check, do we continue our recursion, or not?
-        // If a wall is encountered, set the next value in its direction to 9, to signify that the recursion should not be
-        // dispatched towards that direction of movement.
-        int up, down, left, right;
-        try { up = heightMap[y-1][x]; }
-        catch (ArgumentOutOfRangeException) { up = 9; }
-        try { down = heightMap[y+1][x]; }
-        catch(ArgumentOutOfRangeException) { down = 9; }
-        try { left = heightMap[y][x-1]; }
-        catch(ArgumentOutOfRangeException) { left = 9; }
-        try { right = heightMap[y][x+1]; }
-        catch(ArgumentOutOfRangeException) { right = 9; }
-
-        // If the adjacent position in the direction of movement is neither 9, nor found in our basin set, we start a new recursion there.
-        if (direction == mLeft) {
-            // y+1/-1, x-1
-            if ((left != 9) && (!basin.Contains(PackPoint(x-1, y)))) {
-                FindBasin(heightMap, basin, mLeft, x-1, y);
+        // Restart the recursion.
+        List<int> directions = new List<int>() { mLeft, mRight, mDown, mUp };
+        int opposite = opposites[direction];
+        directions.Remove(opposite);
+        foreach(int newDirection in directions) {
+            int nextX = x+movements[newDirection][0];
+            int nextY = y+movements[newDirection][1];
+            if ((nextX < 0) || (nextX == heightMap[0].Count)) {
+                // Skip this
+                continue;
             }
-            if ((up != 9) && (!basin.Contains(PackPoint(x, y-1)))) {
-                FindBasin(heightMap, basin, mUp, x, y-1);
+            if ((nextY < 0) || (nextY == heightMap.Count)) {
+                // Skip
+                continue;
             }
-            if ((down != 9) && (!basin.Contains(PackPoint(x, y+1)))) {
-                FindBasin(heightMap, basin, mDown, x, y+1);
+            // Valid next point
+            packedPoint = PackPoint(nextX, nextY);
+            if ((basin.Contains(packedPoint)) || (heightMap[nextY][nextX] == 9)) {
+                // The next point is either a 9, or has already been checked previously. Skip
+                continue;
             }
-        }
-        else if (direction == mRight) {
-            // y+1/-1, x+1
-            if ((right != 9) && (!basin.Contains(PackPoint(x+1, y)))) {
-                FindBasin(heightMap, basin, mRight, x+1, y);
-            }
-            if ((up != 9) && (!basin.Contains(PackPoint(x, y-1)))) {
-                FindBasin(heightMap, basin, mUp, x, y-1);
-            }
-            if ((down != 9) && (!basin.Contains(PackPoint(x, y+1)))) {
-                FindBasin(heightMap, basin, mDown, x, y+1);
-            }
-        }
-        else if (direction == mUp) {
-            // y+1/-1, x-1
-            if ((left != 9) && (!basin.Contains(PackPoint(x-1, y)))) {
-                FindBasin(heightMap, basin, mLeft, x-1, y);
-            }
-            if ((right != 9) && (!basin.Contains(PackPoint(x+1, y)))) {
-                FindBasin(heightMap, basin, mRight, x+1, y);
-            }
-            if ((up != 9) && (!basin.Contains(PackPoint(x, y-1)))) {
-                FindBasin(heightMap, basin, mDown, x, y-1);
-            }
-        }
-        else if (direction == mDown) {
-            // y+1/-1, x-1
-            if ((left != 9) && (!basin.Contains(PackPoint(x-1, y)))) {
-                FindBasin(heightMap, basin, mLeft, x-1, y);
-            }
-            if ((right != 9) && (!basin.Contains(PackPoint(x+1, y)))) {
-                FindBasin(heightMap, basin, mRight, x+1, y);
-            }
-            if ((down != 9) && (!basin.Contains(PackPoint(x, y+1)))) {
-                FindBasin(heightMap, basin, mDown, x, y+1);
-            }
+            // The next point is valid, not 9, and not previously checked. Restart the recursion.
+            FindBasin(heightMap, basin, newDirection, nextX, nextY);
         }
     }
 
