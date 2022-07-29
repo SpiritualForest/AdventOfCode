@@ -119,8 +119,8 @@ public class Solution {
     }
 
     private static Output SolveProblem(List<List<int>> heightMap) {
-        int rows = (int)heightMap.Count; // y
-        int columns = (int)heightMap[0].Count; // x
+        int rows = heightMap.Count; // y
+        int columns = heightMap[0].Count; // x
         int left, right, above, below;
         int sum = 0;
         List<int> basins = new List<int>();
@@ -160,7 +160,6 @@ public class Solution {
         }
         basins.Sort();
         basins.Reverse();
-        //Console.WriteLine(string.Join(", ", basins));
         int largestBasinsSize = basins[0] * basins[1] * basins[2];
         return new Output(sum, largestBasinsSize);
     }
