@@ -76,12 +76,23 @@ public class Solution {
     }
 
     private static void FindBasin(List<List<int>> heightMap, HashSet<int> basin, int direction, int x, int y) {
+        // point is guaranteed to be within range because this function is always called
+        // either from a low point in SolveProblem(), or recursively AFTER all the validation checks
+        // have been made here.
         int point = heightMap[y][x];
         int packedPoint = PackPoint(x, y);
         if (!basin.Contains(packedPoint)) {
             basin.Add(packedPoint);
         }
-        // Restart the recursion.
+        
+        /* Restart the recursion:
+         * We remove the opposite direction of travel (so if this point was reached by travelling left, mRight is removed,
+         * because it makes no sense to travel backwards to a previously checked point).
+         * After that we find the value of each adjacent point in directions that are valid for travelling,
+         * check that it doesn't overflow the heightMap list's boundaries, that it's not 9, and that it hasn't been previously checked.
+         * If all these validation checks are passed for the examined adjacent point, the recursion chain continues with it.
+         * If none of the checks pass for any direction, the recursion ends, because there is nothing left to do, and the function exits. */
+
         List<int> directions = new List<int>() { mLeft, mRight, mDown, mUp };
         int opposite = opposites[direction];
         directions.Remove(opposite);
